@@ -4,7 +4,7 @@ import castle.comp3021.assignment.protocol.exception.ResourceNotFoundException;
 import javafx.scene.image.Image;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URI;
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -21,7 +21,8 @@ public class ResourceLoader {
     static {
         // TODO: Initialize RES_PATH
         // replace null to the actual path
-        RES_PATH = Paths.get("src", "recources");
+        String pathToDir = "src/main/resources";
+        RES_PATH = Paths.get(pathToDir).toAbsolutePath();
     }
 
     /**
@@ -34,7 +35,14 @@ public class ResourceLoader {
     @NotNull
     public static String getResource(@NotNull final String relativePath) {
         // TODO
-        return null;
+        Path relative = Paths.get(relativePath);
+        Path resourcePath = RES_PATH.resolve(relative);
+        File resource = new File(relativePath);
+        if (resource.exists()){
+            return resourcePath.toAbsolutePath().toString();
+        }else{
+            throw new ResourceNotFoundException("No file in the path specified");
+        }
     }
 
     /**
@@ -52,7 +60,16 @@ public class ResourceLoader {
     @NotNull
     public static Image getImage(char typeChar) {
         // TODO
-        return null;
+        return switch (typeChar) {
+            case 'K' -> new Image(ResourceLoader.getResource("assets/images/whiteK.png"));
+            case 'A' -> new Image(ResourceLoader.getResource("assets/images/whiteA.png"));
+            case 'k' -> new Image(ResourceLoader.getResource("assets/images/blackK.png"));
+            case 'a' -> new Image(ResourceLoader.getResource("assets/images/blackA.png"));
+            case 'c' -> new Image(ResourceLoader.getResource("assets/images/center.png"));
+            case 'l' -> new Image(ResourceLoader.getResource("assets/images/lightBoard.png"));
+            case 'd' -> new Image(ResourceLoader.getResource("assets/images/darkBoard.png"));
+            default -> throw new ResourceNotFoundException("No image found for specified type");
+        };
     }
 
 
