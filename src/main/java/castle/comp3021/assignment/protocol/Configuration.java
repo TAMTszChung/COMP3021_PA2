@@ -184,7 +184,11 @@ public class Configuration implements Cloneable {
      */
     public boolean isFirstPlayerHuman(){
         //TODO
-        return false;
+        if (this.players[0] instanceof ConsolePlayer){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
@@ -193,7 +197,11 @@ public class Configuration implements Cloneable {
      */
     public boolean isSecondPlayerHuman(){
         //TODO
-        return false;
+        if (this.players[1] instanceof ConsolePlayer){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
