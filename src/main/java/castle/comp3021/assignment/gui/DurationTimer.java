@@ -2,10 +2,7 @@ package castle.comp3021.assignment.gui;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 /**
@@ -59,6 +56,14 @@ public class DurationTimer {
      */
     void start() {
         //TODO
+        this.ticksElapsed = 0;
+        var task = new TimerTask() {
+            @Override
+            public void run() {
+                ticksElapsed++;
+            }
+        };
+        flowTimer.scheduleAtFixedRate(task, 1000,1000);
     }
 
     /**
@@ -66,6 +71,7 @@ public class DurationTimer {
      */
     void stop() {
         //TODO
+        flowTimer.cancel();
     }
 
 }
