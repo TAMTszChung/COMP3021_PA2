@@ -2,6 +2,7 @@ package castle.comp3021.assignment.protocol;
 
 import castle.comp3021.assignment.piece.Archer;
 import castle.comp3021.assignment.piece.Knight;
+import castle.comp3021.assignment.player.ConsolePlayer;
 import castle.comp3021.assignment.player.RandomPlayer;
 import castle.comp3021.assignment.protocol.exception.InvalidConfigurationError;
 
@@ -201,6 +202,11 @@ public class Configuration implements Cloneable {
      */
     public void setFirstPlayerHuman(boolean isHuman){
         //TODO
+        if (isHuman){
+            this.players[0] = new ConsolePlayer("White");
+        }else{
+            this.players[0] = new RandomPlayer("White");
+        }
     }
 
     /**
@@ -209,7 +215,11 @@ public class Configuration implements Cloneable {
      */
     public void setSecondPlayerHuman(boolean isHuman){
         //TODO
-
+        if (isHuman){
+            this.players[1] = new ConsolePlayer("Black");
+        }else{
+            this.players[1] = new RandomPlayer("Black");
+        }
     }
 
 
@@ -259,12 +269,16 @@ public class Configuration implements Cloneable {
         StringBuilder sb = new StringBuilder();
         sb.append("size:");
         sb.append(this.size);
+
         sb.append("\nnumMovesProtection:");
         sb.append(this.numMovesProtection);
+
         sb.append("\ncentralPlace:");
         sb.append(this.centralPlace.toString());
+
         sb.append("\nnumPlayers:");
         sb.append(this.players.length);
+
         sb.append("\n\nPlayer info");
         for (int i=0; i<this.players.length;i++){
             sb.append("\n#player");
