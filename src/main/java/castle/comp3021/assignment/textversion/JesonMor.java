@@ -194,8 +194,10 @@ public class JesonMor extends Game {
         //TODO
         StringBuilder sb = new StringBuilder();
         sb.append("### FXJesonMor ###\n\n");
+        sb.append("#Game setting\n");
         sb.append(this.configuration.toString());
         sb.append("\n\n");
+        sb.append("#Move records\n");
         for (MoveRecord mr: this.moveRecords){
             sb.append(mr.toString());
         }
