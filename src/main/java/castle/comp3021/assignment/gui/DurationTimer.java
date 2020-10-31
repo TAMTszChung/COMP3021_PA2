@@ -56,7 +56,6 @@ public class DurationTimer {
      */
     void start() {
         //TODO
-        this.ticksElapsed = 0;
         var task = new TimerTask() {
             @Override
             public void run() {
