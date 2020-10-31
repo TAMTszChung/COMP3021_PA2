@@ -4,7 +4,9 @@ import castle.comp3021.assignment.protocol.exception.ResourceNotFoundException;
 import javafx.scene.image.Image;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Helper class for loading resources from the filesystem.
@@ -19,7 +21,7 @@ public class ResourceLoader {
     static {
         // TODO: Initialize RES_PATH
         // replace null to the actual path
-        RES_PATH = null;
+        RES_PATH = Paths.get("src", "recources");
     }
 
     /**
