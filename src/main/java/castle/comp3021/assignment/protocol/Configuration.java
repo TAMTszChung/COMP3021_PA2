@@ -255,6 +255,26 @@ public class Configuration implements Cloneable {
     @Override
     public String toString() {
         // TODO
-        return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("size:");
+        sb.append(this.size);
+        sb.append("\nnumMovesProtection:");
+
+        sb.append("\ncentralPlace:");
+
+        sb.append("\nnumPlayers:");
+
+        sb.append("\n\nPlayer info");
+        int i = 1;
+        for (Player p: players){
+            sb.append("\n#player");
+            sb.append(i);
+            i++;
+            sb.append("\n");
+            String playerInfo = String.format("name:%s, score:%d", p.getName(), p.getScore());
+            sb.append(playerInfo);
+        }
+
+        return sb.toString();
     }
 }
