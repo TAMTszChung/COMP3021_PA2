@@ -209,6 +209,7 @@ public class Configuration implements Cloneable {
      */
     public void setSecondPlayerHuman(boolean isHuman){
         //TODO
+
     }
 
 
@@ -259,19 +260,17 @@ public class Configuration implements Cloneable {
         sb.append("size:");
         sb.append(this.size);
         sb.append("\nnumMovesProtection:");
-
+        sb.append(this.numMovesProtection);
         sb.append("\ncentralPlace:");
-
+        sb.append(this.centralPlace.toString());
         sb.append("\nnumPlayers:");
-
+        sb.append(this.players.length);
         sb.append("\n\nPlayer info");
-        int i = 1;
-        for (Player p: players){
+        for (int i=0; i<this.players.length;i++){
             sb.append("\n#player");
             sb.append(i);
-            i++;
             sb.append("\n");
-            String playerInfo = String.format("name:%s, score:%d", p.getName(), p.getScore());
+            String playerInfo = String.format("name:%s, score:%d", players[i].getName(), players[i].getScore());
             sb.append(playerInfo);
         }
 
