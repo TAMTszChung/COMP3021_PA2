@@ -38,6 +38,16 @@ public class NumberTextField extends TextField {
      */
     private boolean validate(@NotNull String text) {
         //TODO
+        if (text.isBlank()){
+            return true;
+        }
+
+        try{
+            int i = Integer.parseInt(text);
+        }catch (NumberFormatException e){
+            return false;
+        }
+
         return true;
     }
 
