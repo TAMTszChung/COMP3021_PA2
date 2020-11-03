@@ -6,6 +6,8 @@ import castle.comp3021.assignment.gui.controllers.SceneManager;
 import castle.comp3021.assignment.gui.views.BigButton;
 import castle.comp3021.assignment.gui.views.BigVBox;
 import castle.comp3021.assignment.gui.views.NumberTextField;
+import castle.comp3021.assignment.protocol.Configuration;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -79,6 +81,58 @@ public class GamePane extends BasePane {
     @Override
     void setCallbacks() {
         //TODO
+        this.isHumanPlayer1Button.setOnAction(event -> {
+            globalConfiguration.setFirstPlayerHuman(!globalConfiguration.isFirstPlayerHuman());
+            if (globalConfiguration.isFirstPlayerHuman()){
+                this.isHumanPlayer1Button.setText("Player 1: Human");
+            }else{
+                this.isHumanPlayer1Button.setText("Player 1: Computer");
+            }
+        });
+
+        this.isHumanPlayer2Button.setOnAction(event -> {
+            globalConfiguration.setSecondPlayerHuman(!globalConfiguration.isSecondPlayerHuman());
+            if (globalConfiguration.isSecondPlayerHuman()){
+                this.isHumanPlayer2Button.setText("Player 2: Human");
+            }else{
+                this.isHumanPlayer2Button.setText("Player 2: Computer");
+            }
+        });
+
+        this.useDefaultButton.setOnAction(actionEvent -> {
+            this.sizeFiled.setText(String.valueOf(globalConfiguration.getSize()));
+            this.numMovesProtectionField.setText(String.valueOf(globalConfiguration.getNumMovesProtection()));
+            if (globalConfiguration.isFirstPlayerHuman()){
+                this.isHumanPlayer1Button.setText("Player 1: Human");
+            }else{
+                this.isHumanPlayer1Button.setText("Player 1: Computer");
+            }
+            if (globalConfiguration.isSecondPlayerHuman()){
+                this.isHumanPlayer2Button.setText("Player 2: Human");
+            }else{
+                this.isHumanPlayer2Button.setText("Player 2: Computer");
+            }
+        });
+
+        this.playButton.setOnAction(event ->{
+            int inputSize = this.sizeFiled.getValue();
+            int inputnumProtection = this.numMovesProtectionField.getValue();
+            Optional<String> error = validate(inputSize, inputnumProtection);
+            if (error.isPresent()){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Validation Failed");
+                alert.setContentText(error.get());
+                alert.showAndWait();
+            }else{
+                this.fxJesonMor = new FXJesonMor(new Configuration(inputSize, globalConfiguration.getPlayers(), inputnumProtection));
+                GamePlayPane gpPane = SceneManager.getInstance().getPane(GamePlayPane.class);
+                gpPane.initializeGame(fxJesonMor);
+                SceneManager.getInstance().showPane(GamePlayPane.class);
+            }
+        });
+
+        this.returnButton.setOnAction(event -> SceneManager.getInstance().showPane(MainMenuPane.class));
     }
 
     /**
@@ -123,6 +177,20 @@ public class GamePane extends BasePane {
      */
     public static Optional<String> validate(int size, int numProtection) {
         //TODO
-        return null;
+        if (size < 3) {
+            return Optional.of("Size of game board must be at least 3");
+        }
+        if (size % 2 != 1) {
+            return Optional.of("Size of game board must be an odd number");
+        }
+        if (size > 26) {
+            return Optional.of("Size of game board is at most 26");
+        }
+
+        if (numProtection < 0) {
+            return Optional.of("Steps of protection should be greater than or equal to 0.");
+        }
+
+        return Optional.empty();
     }
 }
