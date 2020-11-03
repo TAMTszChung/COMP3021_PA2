@@ -112,6 +112,12 @@ public class SceneManager {
      */
     public void showPane(@NotNull final Class<? extends BasePane> pane) {
         //TODO
+        Scene nextScene = this.scenes.get(pane);
+        if (nextScene != null){
+            showScene(nextScene);
+        }else{
+            throw new IllegalArgumentException("Cannot find scene of the specified pane type");
+        }
     }
 
     /**
