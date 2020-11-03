@@ -35,9 +35,8 @@ public class ResourceLoader {
     @NotNull
     public static String getResource(@NotNull final String relativePath) {
         // TODO
-        Path relative = Paths.get(relativePath);
-        Path resourcePath = RES_PATH.resolve(relative);
-        File resource = new File(relativePath);
+        Path resourcePath = RES_PATH.resolve(relativePath);
+        File resource = new File(resourcePath.toUri().toASCIIString());
         if (resource.exists()){
             return resourcePath.toAbsolutePath().toString();
         }else{
