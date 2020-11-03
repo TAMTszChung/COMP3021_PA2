@@ -99,7 +99,7 @@ public class GamePane extends BasePane {
             }
         });
 
-        this.useDefaultButton.setOnAction(actionEvent -> {
+        this.useDefaultButton.setOnAction(event -> {
             this.sizeFiled.setText(String.valueOf(globalConfiguration.getSize()));
             this.numMovesProtectionField.setText(String.valueOf(globalConfiguration.getNumMovesProtection()));
             if (globalConfiguration.isFirstPlayerHuman()){
