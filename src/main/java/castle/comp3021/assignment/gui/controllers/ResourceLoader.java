@@ -23,6 +23,7 @@ public class ResourceLoader {
         // replace null to the actual path
         String pathToDir = "src/main/resources";
         RES_PATH = Paths.get(pathToDir).toAbsolutePath();
+        System.out.println(RES_PATH);
     }
 
     /**
@@ -35,10 +36,10 @@ public class ResourceLoader {
     @NotNull
     public static String getResource(@NotNull final String relativePath) {
         // TODO
-        Path resourcePath = RES_PATH.resolve(relativePath);
-        File resource = new File(resourcePath.toUri().toASCIIString());
+        Path resourcePath = RES_PATH.resolve(relativePath).toAbsolutePath();
+        File resource = new File(resourcePath.toString());
         if (resource.exists()){
-            return resourcePath.toAbsolutePath().toString();
+            return resourcePath.toUri().toASCIIString();
         }else{
             throw new ResourceNotFoundException("No file in the path specified");
         }
