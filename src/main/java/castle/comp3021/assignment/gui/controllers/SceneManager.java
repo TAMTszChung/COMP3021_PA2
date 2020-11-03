@@ -68,6 +68,7 @@ public class SceneManager {
      */
     private SceneManager() {
         //TODO
+        this.scenes.forEach((key, value)->value.getStylesheets().add(ViewConfig.CSS_STYLES_PATH));
     }
 
     /**
