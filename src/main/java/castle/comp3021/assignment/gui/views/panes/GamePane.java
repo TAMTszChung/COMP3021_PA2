@@ -178,17 +178,17 @@ public class GamePane extends BasePane {
     public static Optional<String> validate(int size, int numProtection) {
         //TODO
         if (size < 3) {
-            return Optional.of("Size of game board must be at least 3");
+            return Optional.of(ViewConfig.MSG_BAD_SIZE_NUM);
         }
         if (size % 2 != 1) {
-            return Optional.of("Size of game board must be an odd number");
+            return Optional.of(ViewConfig.MSG_ODD_SIZE_NUM);
         }
         if (size > 26) {
-            return Optional.of("Size of game board is at most 26");
+            return Optional.of(ViewConfig.MSG_UPPERBOUND_SIZE_NUM);
         }
 
         if (numProtection < 0) {
-            return Optional.of("Steps of protection should be greater than or equal to 0.");
+            return Optional.of(ViewConfig.MSG_NEG_PROT);
         }
 
         return Optional.empty();
