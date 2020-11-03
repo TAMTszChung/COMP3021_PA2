@@ -55,8 +55,8 @@ public class GamePane extends BasePane {
     @Override
     void connectComponents() {
         //TODO
-        this.container.getChildren().addAll(title, playButton, returnButton, useDefaultButton, isHumanPlayer1Button,
-                isHumanPlayer2Button, sizeFiled, sizeBox, numMovesProtectionField, numMovesProtectionBox);
+        this.container.getChildren().addAll(title, sizeBox, numMovesProtectionBox, isHumanPlayer1Button,
+                isHumanPlayer2Button, useDefaultButton, playButton, returnButton);
         this.setCenter(this.container);
     }
 
@@ -98,6 +98,19 @@ public class GamePane extends BasePane {
      */
     void fillValues(){
         // TODO
+        this.sizeFiled.setText(String.valueOf(globalConfiguration.getSize()));
+        this.numMovesProtectionField.setText(String.valueOf(globalConfiguration.getNumMovesProtection()));
+        if (globalConfiguration.isFirstPlayerHuman()){
+            this.isHumanPlayer1Button.setText("Player 1: Human");
+        }else{
+            this.isHumanPlayer1Button.setText("Player 1: Computer");
+        }
+
+        if (globalConfiguration.isSecondPlayerHuman()){
+            this.isHumanPlayer2Button.setText("Player 2: Human");
+        }else{
+            this.isHumanPlayer2Button.setText("Player 2: Computer");
+        }
     }
 
     /**
