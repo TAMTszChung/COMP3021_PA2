@@ -3,6 +3,7 @@ package castle.comp3021.assignment.gui.views.panes;
 import castle.comp3021.assignment.gui.DurationTimer;
 import castle.comp3021.assignment.gui.FXJesonMor;
 import castle.comp3021.assignment.gui.ViewConfig;
+import castle.comp3021.assignment.gui.controllers.AudioManager;
 import castle.comp3021.assignment.gui.views.BigButton;
 import castle.comp3021.assignment.gui.views.BigVBox;
 import castle.comp3021.assignment.gui.views.GameplayInfoPane;
@@ -19,6 +20,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 /**
  * This class implements the main playing function of Jeson Mor
@@ -85,12 +88,17 @@ public class GamePlayPane extends BasePane {
      *      - other global variable you want to note down.
      */
     // TODO
+    FXJesonMor currentGame = null;
+    Place startPlace = null;
+    Place endPlace = null;
+    Player winner = null;
 
 
     public GamePlayPane() {
         connectComponents();
         styleComponents();
         setCallbacks();
+
     }
 
     /**
@@ -99,6 +107,17 @@ public class GamePlayPane extends BasePane {
     @Override
     void connectComponents() {
         //TODO
+        this.topBar.getChildren().addAll(title);
+        this.topBar.setAlignment(Pos.CENTER);
+
+        this.leftContainer.getChildren().addAll(parameterText, historyLabel,
+                scrollPane, startButton, restartButton, returnButton);
+
+        this.centerContainer.getChildren().addAll(gamePlayCanvas);
+
+        this.setTop(topBar);
+        this.setLeft(leftContainer);
+        this.setCenter(centerContainer);
     }
 
     /**
@@ -118,6 +137,33 @@ public class GamePlayPane extends BasePane {
     @Override
     void setCallbacks() {
         //TODO
+        this.gamePlayCanvas.setOnMousePressed(this::onCanvasPressed);
+        this.gamePlayCanvas.setOnMouseDragged(this::onCanvasDragged);
+        this.gamePlayCanvas.setOnMouseReleased(this::onCanvasReleased);
+
+        this.startButton.setOnAction(event -> {
+            this.startButton.setDisable(true);
+            this.restartButton.setDisable(false);
+            this.currentGame.startCountdown();
+        });
+
+        this.restartButton.setOnAction(event -> {
+            this.onRestartButtonClick();
+        });
+
+        this.returnButton.setOnAction(event -> {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirm");
+            alert.setHeaderText("Return to menu?");
+            alert.setContentText("Game progress will be lost.");
+            alert.getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent()) {
+                if (result.get().equals(ButtonType.OK)) {
+                    doQuitToMenu();
+                }
+            }
+        });
     }
 
     /**
@@ -132,6 +178,20 @@ public class GamePlayPane extends BasePane {
      */
     void initializeGame(@NotNull FXJesonMor fxJesonMor) {
         //TODO
+        //rubbish code
+        /*
+        if (currentGame != null){
+            this.endGame();
+        }
+
+        this.currentGame = fxJesonMor;
+
+        this.infoPane = new GameplayInfoPane(currentGame.getPlayer1Score(), currentGame.getPlayer2Score(), currentGame.getCurPlayerName(), ticksElapsed);
+        this.centerContainer.getChildren().add(infoPane);
+        this.startButton.setDisable(false);
+        this.restartButton.setDisable(true);
+        this.disnableCanvas();
+        */
     }
 
     /**
@@ -173,6 +233,11 @@ public class GamePlayPane extends BasePane {
      */
     private void onRestartButtonClick(){
         //TODO
+        this.endGame();
+        Configuration currentConfig = currentGame.getConfiguration();
+        FXJesonMor newGame = new FXJesonMor(currentConfig);
+        this.initializeGame(newGame);
+        //this.disnableCanvas();
     }
 
     /**
@@ -186,6 +251,13 @@ public class GamePlayPane extends BasePane {
      */
     private void onCanvasPressed(MouseEvent event){
         // TODO
+        double startX = toBoardCoordinate(event.getX());
+        double startY = toBoardCoordinate(event.getY());
+        this.startPlace = new Place((int)startX, (int)startY);
+
+        GraphicsContext currentGC = gamePlayCanvas.getGraphicsContext2D();
+        Renderer.drawRectangle(currentGC, startX, startY);
+        AudioManager.getInstance().playSound(AudioManager.SoundRes.CLICK);
     }
 
     /**
@@ -197,6 +269,11 @@ public class GamePlayPane extends BasePane {
      */
     private void onCanvasDragged(MouseEvent event){
         //TODO
+        double ovalX = toBoardCoordinate(event.getX());
+        double ovalY = toBoardCoordinate(event.getY());
+
+        GraphicsContext currentGC = gamePlayCanvas.getGraphicsContext2D();
+        Renderer.drawOval(currentGC, ovalX, ovalY);
     }
 
     /**
@@ -209,6 +286,9 @@ public class GamePlayPane extends BasePane {
      */
     private void onCanvasReleased(MouseEvent event){
         // TODO
+        double endX = toBoardCoordinate(event.getX());
+        double endY = toBoardCoordinate(event.getY());
+        this.endPlace = new Place((int)endX, (int)endY);
     }
 
     /**
@@ -216,6 +296,12 @@ public class GamePlayPane extends BasePane {
      */
     private void createWinPopup(String winnerName){
         //TODO
+        AudioManager.getInstance().playSound(AudioManager.SoundRes.WIN);
+        this.endGame();
+        Alert winAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        winAlert.setTitle("Congratulations!");
+        winAlert.setContentText(winnerName + " wins!");
+        winAlert.showAndWait();
     }
 
 
