@@ -3,6 +3,7 @@ package castle.comp3021.assignment.gui;
 import castle.comp3021.assignment.textversion.JesonMor;
 import castle.comp3021.assignment.protocol.*;
 import castle.comp3021.assignment.gui.controllers.Renderer;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -29,6 +30,8 @@ public class FXJesonMor extends JesonMor {
      */
     public FXJesonMor(Configuration configuration){
         //TODO
+        super(configuration);
+        this.durationTimer = new DurationTimer();
     }
 
     /**
@@ -39,6 +42,10 @@ public class FXJesonMor extends JesonMor {
      */
     public void renderBoard(@NotNull Canvas canvas){
         //TODO
+        Platform.runLater(() -> {
+            Renderer.renderChessBoard(canvas,this.configuration.getSize(),this.configuration.getCentralPlace());
+            Renderer.renderPieces(canvas,this.board);
+        });
     }
 
     /**
@@ -93,5 +100,9 @@ public class FXJesonMor extends JesonMor {
 
         // update score to 2 properties
         // TODO: update scorePlayer1Property and scorePlayer2Property
+        Platform.runLater(() -> {
+            scorePlayer1Property.set(this.configuration.getPlayers()[0].getScore());
+            scorePlayer2Property.set(this.configuration.getPlayers()[1].getScore());
+        });
     }
 }
