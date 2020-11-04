@@ -1,5 +1,6 @@
 package castle.comp3021.assignment.gui.controllers;
 
+import castle.comp3021.assignment.gui.ViewConfig;
 import castle.comp3021.assignment.protocol.Piece;
 import castle.comp3021.assignment.protocol.Place;
 import javafx.scene.canvas.Canvas;
@@ -71,7 +72,7 @@ public class Renderer {
         gc.save();
         Color fillColor = Color.rgb(255,255,220);
         gc.setFill(fillColor);
-        int rectSize = castle.comp3021.assignment.gui.ViewConfig.PIECE_SIZE;
+        int rectSize = ViewConfig.PIECE_SIZE;
         gc.fillRect(x,y,rectSize,rectSize);
         gc.restore();
     }
@@ -86,6 +87,18 @@ public class Renderer {
      */
     public static void renderChessBoard(@NotNull Canvas canvas, int boardSize, Place centerPlace){
         //TODO
+        var gc = canvas.getGraphicsContext2D();
+        int rectSize = ViewConfig.PIECE_SIZE;
+        for(int i=0; i<boardSize; i++){
+            for (int j=0; j<boardSize; j++){
+                if ((i+j)%2  == 0){
+                    gc.drawImage(ResourceLoader.getImage('l'), i*rectSize,j*rectSize);
+                }else{
+                    gc.drawImage(ResourceLoader.getImage('d'), i*rectSize,j*rectSize);
+                }
+            }
+        }
+        gc.drawImage(ResourceLoader.getImage('c'), centerPlace.x()*rectSize,centerPlace.y()*rectSize);
     }
 
     /**
@@ -95,6 +108,16 @@ public class Renderer {
      */
     public static void renderPieces(@NotNull Canvas canvas, @NotNull Piece[][] board) {
         //TODO
+        var gc = canvas.getGraphicsContext2D();
+        int rectSize = ViewConfig.PIECE_SIZE;
+        for (int i=0; i<board.length;i++){
+            for (int j=0; j<board[i].length; j++){
+                Piece currentPiece = board[i][j];
+                if (currentPiece != null){
+                    gc.drawImage(currentPiece.getImageRep().image, i*rectSize,j*rectSize);
+                }
+            }
+        }
     }
 
 }
