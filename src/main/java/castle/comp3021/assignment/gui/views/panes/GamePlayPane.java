@@ -4,6 +4,7 @@ import castle.comp3021.assignment.gui.DurationTimer;
 import castle.comp3021.assignment.gui.FXJesonMor;
 import castle.comp3021.assignment.gui.ViewConfig;
 import castle.comp3021.assignment.gui.controllers.AudioManager;
+import castle.comp3021.assignment.gui.controllers.SceneManager;
 import castle.comp3021.assignment.gui.views.BigButton;
 import castle.comp3021.assignment.gui.views.BigVBox;
 import castle.comp3021.assignment.gui.views.GameplayInfoPane;
@@ -160,7 +161,7 @@ public class GamePlayPane extends BasePane {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent()) {
                 if (result.get().equals(ButtonType.OK)) {
-                    doQuitToMenu();
+                    doQuitToMenuAction();
                 }
             }
         });
@@ -340,6 +341,18 @@ public class GamePlayPane extends BasePane {
      */
     private void doQuitToMenuAction() {
         // TODO
+        Alert quitAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        quitAlert.setTitle("Confirm");
+        quitAlert.setHeaderText("Return to menu?");
+        quitAlert.setContentText("Game progress will be lost.");
+        quitAlert.getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
+        quitAlert.showAndWait();
+        Optional<ButtonType> result = quitAlert.showAndWait();
+        if (result.isPresent()) {
+            if (result.get().equals(ButtonType.OK)) {
+                doQuitToMenu();
+            }
+        }
     }
 
     /**
@@ -356,6 +369,9 @@ public class GamePlayPane extends BasePane {
      */
     private void doQuitToMenu() {
         // TODO
+        this.endGame();
+        this.currentGame = null;
+        SceneManager.getInstance().showPane(MainMenuPane.class);
     }
 
     /**
@@ -367,7 +383,8 @@ public class GamePlayPane extends BasePane {
      */
     private int toBoardCoordinate(double x){
         // TODO
-        return 0;
+        int boardCoordinate = (int) (Math.floor(x/ViewConfig.PIECE_SIZE)*32);
+        return boardCoordinate;
     }
 
     /**
