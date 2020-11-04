@@ -153,17 +153,7 @@ public class GamePlayPane extends BasePane {
         });
 
         this.returnButton.setOnAction(event -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm");
-            alert.setHeaderText("Return to menu?");
-            alert.setContentText("Game progress will be lost.");
-            alert.getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent()) {
-                if (result.get().equals(ButtonType.OK)) {
-                    doQuitToMenuAction();
-                }
-            }
+            doQuitToMenuAction();
         });
     }
 
@@ -346,7 +336,6 @@ public class GamePlayPane extends BasePane {
         quitAlert.setHeaderText("Return to menu?");
         quitAlert.setContentText("Game progress will be lost.");
         quitAlert.getButtonTypes().setAll(ButtonType.CANCEL, ButtonType.OK);
-        quitAlert.showAndWait();
         Optional<ButtonType> result = quitAlert.showAndWait();
         if (result.isPresent()) {
             if (result.get().equals(ButtonType.OK)) {
