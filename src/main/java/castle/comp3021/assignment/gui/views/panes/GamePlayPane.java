@@ -322,6 +322,10 @@ public class GamePlayPane extends BasePane {
      */
     private void showInvalidMoveMsg(String errorMsg){
         //TODO
+        Alert invlidMoveAlert = new Alert(Alert.AlertType.ERROR);
+        invlidMoveAlert.setHeaderText("Your movement is invalid due to following reason(s):");
+        invlidMoveAlert.setContentText(errorMsg);
+        invlidMoveAlert.showAndWait();
     }
 
     /**
