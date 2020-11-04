@@ -126,9 +126,7 @@ public class GamePane extends BasePane {
                 alert.showAndWait();
             }else{
                 this.fxJesonMor = new FXJesonMor(new Configuration(inputSize, globalConfiguration.getPlayers(), inputnumProtection));
-                GamePlayPane gpPane = SceneManager.getInstance().getPane(GamePlayPane.class);
-                gpPane.initializeGame(fxJesonMor);
-                SceneManager.getInstance().showPane(GamePlayPane.class);
+                startGame(fxJesonMor);
             }
         });
 
