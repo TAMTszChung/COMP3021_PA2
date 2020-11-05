@@ -393,5 +393,23 @@ public class GamePlayPane extends BasePane {
      */
     private void endGame() {
         //TODO
+        //clear board and history field
+        this.gamePlayCanvas.getGraphicsContext2D().clearRect(0,0,gamePlayCanvas.getWidth(), gamePlayCanvas.getHeight());
+        this.historyFiled.setText("");
+
+        //reset timer
+        if (this.currentGame != null){
+            this.currentGame.startCountdown();
+        }
+
+        //rest Pane component
+        this.ticksElapsed.set(0);
+
+        this.infoPane = null;
+        this.currentGame = null;
+
+        //reset button
+        this.startButton.setDisable(false);
+        this.restartButton.setDisable(true);
     }
 }
