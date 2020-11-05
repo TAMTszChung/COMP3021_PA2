@@ -175,7 +175,7 @@ public class GamePlayPane extends BasePane {
         }
 
         this.currentGame = fxJesonMor;
-        currentGame.getConfiguration().setAllInitialPieces();;
+        currentGame.getConfiguration().setAllInitialPieces();
 
         this.startButton.setDisable(false);
         this.restartButton.setDisable(true);
@@ -220,12 +220,7 @@ public class GamePlayPane extends BasePane {
         this.gamePlayCanvas.setWidth(boardsize*ViewConfig.PIECE_SIZE);
         this.gamePlayCanvas.setHeight(boardsize*ViewConfig.PIECE_SIZE);
 
-        this.currentGame.addOnTickHandler(() -> {
-            Platform.runLater(() -> {
-                this.ticksElapsed.set(this.ticksElapsed.get()+1);
-
-            });
-        });
+        this.currentGame.addOnTickHandler(() -> Platform.runLater(() -> this.ticksElapsed.set(this.ticksElapsed.get()+1)));
 
         this.currentGame.addOnTimeupHandler(() -> {
             if (this.winner == null) {
@@ -475,7 +470,7 @@ public class GamePlayPane extends BasePane {
         this.winner = null;
     }
 
-    private void showWinAlert(boolean win){
+    private void showWinAlert(){
         //alert
         ButtonType startnewGame = new ButtonType("Start New Game");
         ButtonType export = new ButtonType("Export Move Records");
@@ -486,17 +481,17 @@ public class GamePlayPane extends BasePane {
         timesup.setContentText(this.winner.getName() + " wins!");
         timesup.getButtonTypes().setAll(returnMainMenu, export, startnewGame);
         ButtonType result = timesup.showAndWait().orElseThrow();
-        if (result.getText().equals("Start New Game")) {
-            this.onRestartButtonClick();
-        }else if (result.getText().equals("Export Move Records")){
-            try {
-                Serializer.getInstance().saveToFile(this.currentGame);
-            } catch (IOException e) {
-                e.printStackTrace();
+        switch (result.getText()) {
+            case "Start New Game" -> this.onRestartButtonClick();
+            case "Export Move Records" -> {
+                try {
+                    Serializer.getInstance().saveToFile(this.currentGame);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                this.onRestartButtonClick();
             }
-            this.onRestartButtonClick();
-        }else if (result.getText().equals("Return to Main Menu")){
-            this.doQuitToMenu();
+            case "Return to Main Menu" -> this.doQuitToMenu();
         }
     }
 
@@ -511,17 +506,17 @@ public class GamePlayPane extends BasePane {
         timesup.setContentText(this.currentGame.getCurrentPlayer().getName() + " Lose!");
         timesup.getButtonTypes().setAll(returnMainMenu, export, startnewGame);
         ButtonType result = timesup.showAndWait().orElseThrow();
-        if (result.getText().equals("Start New Game")) {
-            this.onRestartButtonClick();
-        }else if (result.getText().equals("Export Move Records")){
-            try {
-                Serializer.getInstance().saveToFile(this.currentGame);
-            } catch (IOException e) {
-                e.printStackTrace();
+        switch (result.getText()) {
+            case "Start New Game" -> this.onRestartButtonClick();
+            case "Export Move Records" -> {
+                try {
+                    Serializer.getInstance().saveToFile(this.currentGame);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                this.onRestartButtonClick();
             }
-            this.onRestartButtonClick();
-        }else if (result.getText().equals("Return to Main Menu")){
-            this.doQuitToMenu();
+            case "Return to Main Menu" -> this.doQuitToMenu();
         }
     }
 }
