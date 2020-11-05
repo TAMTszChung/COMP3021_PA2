@@ -43,6 +43,7 @@ public class FXJesonMor extends JesonMor {
     public void renderBoard(@NotNull Canvas canvas){
         //TODO
         Platform.runLater(() -> {
+            canvas.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(), canvas.getHeight());
             Renderer.renderChessBoard(canvas,this.configuration.getSize(),this.configuration.getCentralPlace());
             Renderer.renderPieces(canvas,this.board);
         });
