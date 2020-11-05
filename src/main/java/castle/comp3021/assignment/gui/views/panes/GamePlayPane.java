@@ -21,6 +21,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
@@ -149,6 +150,7 @@ public class GamePlayPane extends BasePane {
             this.startButton.setDisable(true);
             this.restartButton.setDisable(false);
             this.currentGame.startCountdown();
+            this.startGame();
         });
 
         this.restartButton.setOnAction(event -> this.onRestartButtonClick());
@@ -173,6 +175,7 @@ public class GamePlayPane extends BasePane {
         }
 
         this.currentGame = fxJesonMor;
+        currentGame.getConfiguration().setAllInitialPieces();;
 
         this.startButton.setDisable(false);
         this.restartButton.setDisable(true);
@@ -208,15 +211,20 @@ public class GamePlayPane extends BasePane {
 
         int boardsize = this.currentGame.getConfiguration().getSize();
         this.parameterText.setText(parameters.toString());
+
         this.infoPane = new GameplayInfoPane(currentGame.getPlayer1Score(), currentGame.getPlayer2Score(),
                 currentGame.getCurPlayerName(), ticksElapsed);
+        HBox.setHgrow(this.infoPane, Priority.ALWAYS);
         this.centerContainer.getChildren().add(infoPane);
 
         this.gamePlayCanvas.setWidth(boardsize*ViewConfig.PIECE_SIZE);
         this.gamePlayCanvas.setHeight(boardsize*ViewConfig.PIECE_SIZE);
 
         this.currentGame.addOnTickHandler(() -> {
-            this.ticksElapsed.set(this.ticksElapsed.get()+1);
+            Platform.runLater(() -> {
+                this.ticksElapsed.set(this.ticksElapsed.get()+1);
+
+            });
         });
 
         this.currentGame.addOnTimeupHandler(() -> {
@@ -272,8 +280,8 @@ public class GamePlayPane extends BasePane {
      */
     private void onRestartButtonClick(){
         //TODO
-        this.endGame();
         Configuration currentConfig = currentGame.getConfiguration();
+        this.endGame();
         FXJesonMor newGame = new FXJesonMor(currentConfig);
         this.initializeGame(newGame);
         this.disnableCanvas();
@@ -295,7 +303,7 @@ public class GamePlayPane extends BasePane {
         this.startPlace = new Place((int)startX, (int)startY);
 
         GraphicsContext currentGC = gamePlayCanvas.getGraphicsContext2D();
-        Renderer.drawRectangle(currentGC, startX, startY);
+        Renderer.drawRectangle(currentGC, startX*ViewConfig.PIECE_SIZE, startY*ViewConfig.PIECE_SIZE);
         AudioManager.getInstance().playSound(AudioManager.SoundRes.CLICK);
     }
 
@@ -312,7 +320,7 @@ public class GamePlayPane extends BasePane {
         double ovalY = toBoardCoordinate(event.getY());
 
         GraphicsContext currentGC = gamePlayCanvas.getGraphicsContext2D();
-        Renderer.drawOval(currentGC, ovalX, ovalY);
+        Renderer.drawOval(currentGC, ovalX*ViewConfig.PIECE_SIZE, ovalY*ViewConfig.PIECE_SIZE);
     }
 
     /**
@@ -427,7 +435,7 @@ public class GamePlayPane extends BasePane {
      */
     private int toBoardCoordinate(double x){
         // TODO
-        int boardCoordinate = (int) (Math.floor(x/ViewConfig.PIECE_SIZE)*32);
+        int boardCoordinate = (int) (Math.floor(x/ViewConfig.PIECE_SIZE));
         return boardCoordinate;
     }
 
@@ -441,11 +449,12 @@ public class GamePlayPane extends BasePane {
      */
     private void endGame() {
         //TODO
-        //clear board and history field
+        //clear board, history field, infoPane
         this.gamePlayCanvas.getGraphicsContext2D().clearRect(0,0,gamePlayCanvas.getWidth(), gamePlayCanvas.getHeight());
         this.gamePlayCanvas.setHeight(0.0);
         this.gamePlayCanvas.setWidth(0.0);
         this.historyFiled.setText("");
+        this.centerContainer.getChildren().remove(this.infoPane);
 
         //reset timer
         if (this.currentGame != null){
