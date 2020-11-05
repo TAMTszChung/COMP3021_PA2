@@ -23,7 +23,6 @@ public class ResourceLoader {
         // replace null to the actual path
         String pathToDir = "src/main/resources";
         RES_PATH = Paths.get(pathToDir).toAbsolutePath();
-        System.out.println(RES_PATH);
     }
 
     /**
