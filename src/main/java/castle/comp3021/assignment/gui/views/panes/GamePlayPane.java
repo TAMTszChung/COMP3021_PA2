@@ -148,13 +148,9 @@ public class GamePlayPane extends BasePane {
             this.currentGame.startCountdown();
         });
 
-        this.restartButton.setOnAction(event -> {
-            this.onRestartButtonClick();
-        });
+        this.restartButton.setOnAction(event -> this.onRestartButtonClick());
 
-        this.returnButton.setOnAction(event -> {
-            doQuitToMenuAction();
-        });
+        this.returnButton.setOnAction(event -> this.doQuitToMenuAction());
     }
 
     /**
