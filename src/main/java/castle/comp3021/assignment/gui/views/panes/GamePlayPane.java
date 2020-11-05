@@ -316,11 +316,8 @@ public class GamePlayPane extends BasePane {
      */
     private void onCanvasDragged(MouseEvent event){
         //TODO
-        double ovalX = toBoardCoordinate(event.getX());
-        double ovalY = toBoardCoordinate(event.getY());
-
         GraphicsContext currentGC = gamePlayCanvas.getGraphicsContext2D();
-        Renderer.drawOval(currentGC, ovalX*ViewConfig.PIECE_SIZE, ovalY*ViewConfig.PIECE_SIZE);
+        Renderer.drawOval(currentGC, event.getX(), event.getY());
     }
 
     /**
@@ -336,6 +333,7 @@ public class GamePlayPane extends BasePane {
         double endX = toBoardCoordinate(event.getX());
         double endY = toBoardCoordinate(event.getY());
         this.endPlace = new Place((int)endX, (int)endY);
+        this.currentGame.renderBoard(gamePlayCanvas);
     }
 
     /**
