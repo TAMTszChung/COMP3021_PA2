@@ -428,8 +428,7 @@ public class GamePlayPane extends BasePane {
      */
     private int toBoardCoordinate(double x){
         // TODO
-        int boardCoordinate = (int) (Math.floor(x/ViewConfig.PIECE_SIZE));
-        return boardCoordinate;
+        return (int) (Math.floor(x/ViewConfig.PIECE_SIZE));
     }
 
     /**
