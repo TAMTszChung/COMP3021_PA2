@@ -57,6 +57,9 @@ public class FXJesonMor extends JesonMor {
         durationTimer.registerTickCallback(handler);
     }
 
+    public void addOnTimeupHandler(@NotNull Runnable handler) {
+        durationTimer.registerTimeUpCallback(handler);
+    }
 
     /**
      * Starts the timer
