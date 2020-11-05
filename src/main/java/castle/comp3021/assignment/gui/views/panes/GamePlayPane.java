@@ -450,7 +450,7 @@ public class GamePlayPane extends BasePane {
 
         //reset timer
         if (this.currentGame != null){
-            this.currentGame.startCountdown();
+            this.currentGame.stopCountdown();
         }
 
         //rest Pane component
