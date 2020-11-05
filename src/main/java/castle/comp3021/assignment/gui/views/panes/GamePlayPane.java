@@ -224,7 +224,7 @@ public class GamePlayPane extends BasePane {
         Configuration currentConfig = currentGame.getConfiguration();
         FXJesonMor newGame = new FXJesonMor(currentConfig);
         this.initializeGame(newGame);
-        //this.disnableCanvas();
+        this.disnableCanvas();
     }
 
     /**
@@ -407,5 +407,6 @@ public class GamePlayPane extends BasePane {
         //reset button
         this.startButton.setDisable(false);
         this.restartButton.setDisable(true);
+        this.disnableCanvas();
     }
 }
