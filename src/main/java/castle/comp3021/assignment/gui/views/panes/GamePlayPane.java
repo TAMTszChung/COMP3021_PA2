@@ -227,8 +227,7 @@ public class GamePlayPane extends BasePane {
                 Platform.runLater(this::startGame);
             }
             if (this.ticksElapsed.get() >= DurationTimer.getDefaultEachRound() - 1) {
-                AudioManager.getInstance().playSound(AudioManager.SoundRes.LOSE);
-                showLoseAlert();
+                createLosePopup();
                 Platform.runLater(() -> this.ticksElapsed.set(0));
                 currentGame.stopCountdown();
             }
@@ -338,10 +337,28 @@ public class GamePlayPane extends BasePane {
         //TODO
         AudioManager.getInstance().playSound(AudioManager.SoundRes.WIN);
         this.endGame();
+
+        ButtonType startnewGame = new ButtonType("Start New Game");
+        ButtonType export = new ButtonType("Export Move Records");
+        ButtonType returnMainMenu = new ButtonType("Return to Main Menu");
+
         Alert winAlert = new Alert(Alert.AlertType.CONFIRMATION);
         winAlert.setTitle("Congratulations!");
         winAlert.setContentText(winnerName + " wins!");
-        winAlert.showAndWait();
+        winAlert.getButtonTypes().setAll(returnMainMenu, export, startnewGame);
+        ButtonType result = winAlert.showAndWait().orElseThrow();
+        switch (result.getText()) {
+            case "Start New Game" -> this.onRestartButtonClick();
+            case "Export Move Records" -> {
+                try {
+                    Serializer.getInstance().saveToFile(this.currentGame);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                this.onRestartButtonClick();
+            }
+            case "Return to Main Menu" -> this.doQuitToMenu();
+        }
     }
 
 
@@ -469,33 +486,10 @@ public class GamePlayPane extends BasePane {
         this.winner = null;
     }
 
-    private void showWinAlert(){
+    private void createLosePopup(){
         //alert
-        ButtonType startnewGame = new ButtonType("Start New Game");
-        ButtonType export = new ButtonType("Export Move Records");
-        ButtonType returnMainMenu = new ButtonType("Return to Main Menu");
+        AudioManager.getInstance().playSound(AudioManager.SoundRes.LOSE);
 
-        Alert timesup = new Alert(Alert.AlertType.CONFIRMATION);
-        timesup.setTitle("Congratulations!");
-        timesup.setContentText(this.winner.getName() + " wins!");
-        timesup.getButtonTypes().setAll(returnMainMenu, export, startnewGame);
-        ButtonType result = timesup.showAndWait().orElseThrow();
-        switch (result.getText()) {
-            case "Start New Game" -> this.onRestartButtonClick();
-            case "Export Move Records" -> {
-                try {
-                    Serializer.getInstance().saveToFile(this.currentGame);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                this.onRestartButtonClick();
-            }
-            case "Return to Main Menu" -> this.doQuitToMenu();
-        }
-    }
-
-    private void showLoseAlert(){
-        //alert
         ButtonType startnewGame = new ButtonType("Start New Game");
         ButtonType export = new ButtonType("Export Move Records");
         ButtonType returnMainMenu = new ButtonType("Return to Main Menu");
