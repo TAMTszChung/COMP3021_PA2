@@ -11,6 +11,8 @@ import castle.comp3021.assignment.gui.views.GameplayInfoPane;
 import castle.comp3021.assignment.gui.views.SideMenuVBox;
 import castle.comp3021.assignment.protocol.*;
 import castle.comp3021.assignment.gui.controllers.Renderer;
+import castle.comp3021.assignment.protocol.io.Serializer;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
@@ -22,6 +24,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -165,20 +168,69 @@ public class GamePlayPane extends BasePane {
      */
     void initializeGame(@NotNull FXJesonMor fxJesonMor) {
         //TODO
-        //rubbish code
-        /*
         if (currentGame != null){
             this.endGame();
         }
 
         this.currentGame = fxJesonMor;
 
-        this.infoPane = new GameplayInfoPane(currentGame.getPlayer1Score(), currentGame.getPlayer2Score(), currentGame.getCurPlayerName(), ticksElapsed);
-        this.centerContainer.getChildren().add(infoPane);
         this.startButton.setDisable(false);
         this.restartButton.setDisable(true);
         this.disnableCanvas();
-        */
+        this.startPlace = null;
+        this.endPlace = null;
+        this.winner = null;
+
+        StringBuilder parameters = new StringBuilder();
+        parameters.append("Parameters:");
+        parameters.append("\n\nSize of board: ");
+        parameters.append(this.currentGame.getConfiguration().getSize());
+        parameters.append("\nNum of protection moves: ");
+        parameters.append(this.currentGame.getConfiguration().getNumMovesProtection());
+        //player0 info
+        parameters.append("\nPlayer ");
+        Player player0 = this.currentGame.getConfiguration().getPlayers()[0];
+        parameters.append(player0.getName());
+        if (this.currentGame.getConfiguration().isFirstPlayerHuman()){
+            parameters.append("(human)");
+        }else{
+            parameters.append("(computer)");
+        }
+        //player1 info
+        Player player1 = this.currentGame.getConfiguration().getPlayers()[1];
+        parameters.append("\nPlayer ");
+        parameters.append(player1.getName());
+        if (this.currentGame.getConfiguration().isSecondPlayerHuman()){
+            parameters.append("(human)");
+        }else{
+            parameters.append("(computer)");
+        }
+
+        int boardsize = this.currentGame.getConfiguration().getSize();
+        this.parameterText.setText(parameters.toString());
+        this.infoPane = new GameplayInfoPane(currentGame.getPlayer1Score(), currentGame.getPlayer2Score(),
+                currentGame.getCurPlayerName(), ticksElapsed);
+        this.centerContainer.getChildren().add(infoPane);
+
+        this.gamePlayCanvas.setWidth(boardsize*ViewConfig.PIECE_SIZE);
+        this.gamePlayCanvas.setHeight(boardsize*ViewConfig.PIECE_SIZE);
+
+        this.currentGame.addOnTickHandler(() -> {
+            this.ticksElapsed.set(this.ticksElapsed.get()+1);
+        });
+
+        this.currentGame.addOnTimeupHandler(() -> {
+            if (this.winner == null) {
+                Platform.runLater(this::startGame);
+            }
+            if (this.ticksElapsed.get() >= DurationTimer.getDefaultEachRound() - 1) {
+                AudioManager.getInstance().playSound(AudioManager.SoundRes.LOSE);
+                showLoseAlert();
+                Platform.runLater(() -> this.ticksElapsed.set(0));
+                currentGame.stopCountdown();
+            }
+        });
+        this.currentGame.renderBoard(this.gamePlayCanvas);
     }
 
     /**
@@ -391,6 +443,8 @@ public class GamePlayPane extends BasePane {
         //TODO
         //clear board and history field
         this.gamePlayCanvas.getGraphicsContext2D().clearRect(0,0,gamePlayCanvas.getWidth(), gamePlayCanvas.getHeight());
+        this.gamePlayCanvas.setHeight(0.0);
+        this.gamePlayCanvas.setWidth(0.0);
         this.historyFiled.setText("");
 
         //reset timer
@@ -408,5 +462,59 @@ public class GamePlayPane extends BasePane {
         this.startButton.setDisable(false);
         this.restartButton.setDisable(true);
         this.disnableCanvas();
+
+        this.startPlace = null;
+        this.endPlace = null;
+        this.winner = null;
+    }
+
+    private void showWinAlert(boolean win){
+        //alert
+        ButtonType startnewGame = new ButtonType("Start New Game");
+        ButtonType export = new ButtonType("Export Move Records");
+        ButtonType returnMainMenu = new ButtonType("Return to Main Menu");
+
+        Alert timesup = new Alert(Alert.AlertType.CONFIRMATION);
+        timesup.setTitle("Congratulations!");
+        timesup.setContentText(this.winner.getName() + " wins!");
+        timesup.getButtonTypes().setAll(returnMainMenu, export, startnewGame);
+        ButtonType result = timesup.showAndWait().orElseThrow();
+        if (result.getText().equals("Start New Game")) {
+            this.onRestartButtonClick();
+        }else if (result.getText().equals("Export Move Records")){
+            try {
+                Serializer.getInstance().saveToFile(this.currentGame);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            this.onRestartButtonClick();
+        }else if (result.getText().equals("Return to Main Menu")){
+            this.doQuitToMenu();
+        }
+    }
+
+    private void showLoseAlert(){
+        //alert
+        ButtonType startnewGame = new ButtonType("Start New Game");
+        ButtonType export = new ButtonType("Export Move Records");
+        ButtonType returnMainMenu = new ButtonType("Return to Main Menu");
+
+        Alert timesup = new Alert(Alert.AlertType.CONFIRMATION);
+        timesup.setTitle("Sorry! Time's out!");
+        timesup.setContentText(this.currentGame.getCurrentPlayer().getName() + " Lose!");
+        timesup.getButtonTypes().setAll(returnMainMenu, export, startnewGame);
+        ButtonType result = timesup.showAndWait().orElseThrow();
+        if (result.getText().equals("Start New Game")) {
+            this.onRestartButtonClick();
+        }else if (result.getText().equals("Export Move Records")){
+            try {
+                Serializer.getInstance().saveToFile(this.currentGame);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            this.onRestartButtonClick();
+        }else if (result.getText().equals("Return to Main Menu")){
+            this.doQuitToMenu();
+        }
     }
 }
