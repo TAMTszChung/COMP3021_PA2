@@ -58,10 +58,6 @@ public class FXJesonMor extends JesonMor {
         durationTimer.registerTickCallback(handler);
     }
 
-    public void addOnTimeupHandler(@NotNull Runnable handler) {
-        durationTimer.registerTimeUpCallback(handler);
-    }
-
     /**
      * Starts the timer
      */
@@ -107,6 +103,16 @@ public class FXJesonMor extends JesonMor {
         Platform.runLater(() -> {
             scorePlayer1Property.set(this.configuration.getPlayers()[0].getScore());
             scorePlayer2Property.set(this.configuration.getPlayers()[1].getScore());
+        });
+    }
+
+    public void playerSwitch(){
+        this.numMoves += 1;
+        var players = this.getConfiguration().getPlayers();
+        var numberMoves = this.getNumMoves();
+        this.currentPlayer = players[numberMoves % players.length];
+        Platform.runLater(() -> {
+            this.currentPlayerNameProperty.set(this.currentPlayer.getName());
         });
     }
 }
