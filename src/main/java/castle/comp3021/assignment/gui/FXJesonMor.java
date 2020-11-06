@@ -111,8 +111,6 @@ public class FXJesonMor extends JesonMor {
         var players = this.getConfiguration().getPlayers();
         var numberMoves = this.getNumMoves();
         this.currentPlayer = players[numberMoves % players.length];
-        Platform.runLater(() -> {
-            this.currentPlayerNameProperty.set(this.currentPlayer.getName());
-        });
+        Platform.runLater(() -> this.currentPlayerNameProperty.set(this.currentPlayer.getName()));
     }
 }
