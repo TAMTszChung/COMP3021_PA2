@@ -426,7 +426,7 @@ public class GamePlayPane extends BasePane {
         Alert winAlert = new Alert(Alert.AlertType.CONFIRMATION);
         winAlert.setTitle("Congratulations!");
         winAlert.setContentText(winnerName + " wins!");
-        winAlert.getButtonTypes().setAll(returnMainMenu, export, startnewGame);
+        winAlert.getButtonTypes().setAll(startnewGame, export, returnMainMenu);
         ButtonType result = winAlert.showAndWait().orElseThrow();
         switch (result.getText()) {
             case "Start New Game" -> this.onRestartButtonClick();
@@ -582,7 +582,7 @@ public class GamePlayPane extends BasePane {
         Alert timesup = new Alert(Alert.AlertType.CONFIRMATION);
         timesup.setTitle("Sorry! Time's out!");
         timesup.setContentText(this.currentGame.getCurrentPlayer().getName() + " Lose!");
-        timesup.getButtonTypes().setAll(returnMainMenu, export, startnewGame);
+        timesup.getButtonTypes().setAll(startnewGame, export, returnMainMenu);
         ButtonType result = timesup.showAndWait().orElseThrow();
         switch (result.getText()) {
             case "Start New Game" -> this.onRestartButtonClick();
