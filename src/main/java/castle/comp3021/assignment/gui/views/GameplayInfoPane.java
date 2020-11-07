@@ -81,7 +81,7 @@ public class GameplayInfoPane extends BigVBox {
             this.curPlayerLabel.textProperty().bind(
                     Bindings.createStringBinding(() -> "Current player: " + curPlayer.get(), curPlayer));
             this.timerLabel.textProperty().bind(
-                    Bindings.createStringBinding(() -> countdownFormat(ticksElapsed.get()), ticksElapsed));
+                    Bindings.createStringBinding(() -> "Time: " + countdownFormat(ticksElapsed.get()), ticksElapsed));
         });
     }
 }
