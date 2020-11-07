@@ -9,6 +9,9 @@ import castle.comp3021.assignment.gui.views.BigButton;
 import castle.comp3021.assignment.gui.views.BigVBox;
 import castle.comp3021.assignment.gui.views.GameplayInfoPane;
 import castle.comp3021.assignment.gui.views.SideMenuVBox;
+import castle.comp3021.assignment.player.ConsolePlayer;
+import castle.comp3021.assignment.player.RandomPlayer;
+import castle.comp3021.assignment.player.SmartRandomPlayer;
 import castle.comp3021.assignment.protocol.*;
 import castle.comp3021.assignment.gui.controllers.Renderer;
 import castle.comp3021.assignment.protocol.io.Serializer;
@@ -150,7 +153,6 @@ public class GamePlayPane extends BasePane {
             this.startButton.setDisable(true);
             this.restartButton.setDisable(false);
             this.currentGame.startCountdown();
-            this.startGame();
         });
 
         this.restartButton.setOnAction(event -> this.onRestartButtonClick());
@@ -222,13 +224,15 @@ public class GamePlayPane extends BasePane {
 
         this.currentGame.addOnTickHandler(() -> Platform.runLater(() -> this.ticksElapsed.set(this.ticksElapsed.get()+1)));
 
-        this.currentGame.addOnTimeupHandler(() -> {
+        this.currentGame.addOnTickHandler(() -> {
             if (this.winner == null) {
                 Platform.runLater(this::startGame);
             }
             if (this.ticksElapsed.get() >= DurationTimer.getDefaultEachRound() - 1) {
-                createLosePopup();
-                Platform.runLater(() -> this.ticksElapsed.set(0));
+                Platform.runLater(() -> {
+                    this.ticksElapsed.set(0);
+                    createLosePopup();
+                });
                 currentGame.stopCountdown();
             }
         });
@@ -266,6 +270,66 @@ public class GamePlayPane extends BasePane {
      */
     public void startGame() {
         //TODO
+        Configuration currentConfig = currentGame.getConfiguration();
+        var players = currentConfig.getPlayers();
+        var numberMoves = currentGame.getNumMoves();
+        var currentPlayer = players[numberMoves % players.length];
+        var playerAvailMoves = currentGame.getAvailableMoves(currentPlayer);
+        Move nextmove = null;
+        if (playerAvailMoves.length <= 0) {
+            showInvalidMoveMsg("No available moves for the player " + currentPlayer.getName());
+            if (currentConfig.getPlayers()[0].getScore() < currentConfig.getPlayers()[1].getScore()) {
+                winner = currentConfig.getPlayers()[0];
+            } else if (currentConfig.getPlayers()[0].getScore() > currentConfig.getPlayers()[1].getScore()) {
+                winner = currentConfig.getPlayers()[1];
+            } else {
+                winner = currentPlayer;
+            }
+        }
+
+        if (winner == null){
+            if (currentPlayer instanceof ConsolePlayer){
+                this.enableCanvas();
+                if (startPlace != null && endPlace != null){
+                    nextmove = new Move(startPlace, endPlace);
+                    startPlace = null;
+                    endPlace = null;
+                    this.disnableCanvas();
+                }
+            }else if (currentPlayer instanceof RandomPlayer || currentPlayer instanceof SmartRandomPlayer) {
+                gamePlayCanvas.setDisable(true);
+                nextmove = currentPlayer.nextMove(currentGame, playerAvailMoves);
+            }
+
+            if (nextmove != null){
+                var validateResult = currentPlayer.validateMove(currentGame, nextmove);
+                if (validateResult != null){
+                    this.showInvalidMoveMsg(validateResult);
+                }else{
+                    boolean ownpiece = false;
+                    for (Move m: playerAvailMoves){
+                        if (m.equals(nextmove)){
+                            ownpiece = true;
+                            break;
+                        }
+                    }
+                    if (!ownpiece){
+                        this.showInvalidMoveMsg("The piece you moved does not belong to you!");
+                    }else{
+                        Piece currentPiece = currentGame.getPiece(nextmove.getSource());
+                        currentGame.movePiece(nextmove);
+                        AudioManager.getInstance().playSound(AudioManager.SoundRes.PLACE);
+                        currentGame.updateScore(currentPlayer, currentPiece, nextmove);
+                        winner = currentGame.getWinner(currentPlayer, currentPiece, nextmove);
+                        this.updateHistoryField(nextmove);
+                        currentGame.playerSwitch();
+                        this.ticksElapsed.set(0);
+                    }
+                }
+                currentGame.renderBoard(gamePlayCanvas);
+            }
+        }
+        checkWinner();
     }
 
     /**
@@ -274,9 +338,26 @@ public class GamePlayPane extends BasePane {
      */
     private void onRestartButtonClick(){
         //TODO
-        Configuration currentConfig = currentGame.getConfiguration();
+        //seems the inital board is being changed during the game
         this.endGame();
-        FXJesonMor newGame = new FXJesonMor(currentConfig);
+        Configuration oldConfig = currentGame.getConfiguration();
+        var newSize = oldConfig.getSize();
+        var newMoveProtection = oldConfig.getNumMovesProtection();
+        Player[] newPlayers = new Player[2];
+
+        if (oldConfig.isFirstPlayerHuman()){
+            newPlayers[0] = new ConsolePlayer(oldConfig.getPlayers()[0].getName());
+        }else{
+            newPlayers[0] = new RandomPlayer(oldConfig.getPlayers()[0].getName());
+        }
+
+        if (oldConfig.isSecondPlayerHuman()){
+            newPlayers[1] = new ConsolePlayer(oldConfig.getPlayers()[1].getName());
+        }else{
+            newPlayers[1] = new RandomPlayer(oldConfig.getPlayers()[1].getName());
+        }
+
+        FXJesonMor newGame = new FXJesonMor(new Configuration(newSize, newPlayers, newMoveProtection));
         this.initializeGame(newGame);
         this.disnableCanvas();
     }
@@ -292,6 +373,7 @@ public class GamePlayPane extends BasePane {
      */
     private void onCanvasPressed(MouseEvent event){
         // TODO
+        AudioManager.getInstance().playSound(AudioManager.SoundRes.CLICK);
         double startX = toBoardCoordinate(event.getX());
         double startY = toBoardCoordinate(event.getY());
         this.startPlace = new Place((int)startX, (int)startY);
@@ -336,7 +418,6 @@ public class GamePlayPane extends BasePane {
     private void createWinPopup(String winnerName){
         //TODO
         AudioManager.getInstance().playSound(AudioManager.SoundRes.WIN);
-        this.endGame();
 
         ButtonType startnewGame = new ButtonType("Start New Game");
         ButtonType export = new ButtonType("Export Move Records");
@@ -371,6 +452,11 @@ public class GamePlayPane extends BasePane {
      */
     private void checkWinner(){
         //TODO
+        if (winner != null){
+            this.ticksElapsed.set(0);
+            currentGame.stopCountdown();
+            createWinPopup(winner.getName());
+        }
     }
 
     /**
@@ -474,7 +560,6 @@ public class GamePlayPane extends BasePane {
         this.ticksElapsed.set(0);
 
         this.infoPane = null;
-        this.currentGame = null;
 
         //reset button
         this.startButton.setDisable(false);
