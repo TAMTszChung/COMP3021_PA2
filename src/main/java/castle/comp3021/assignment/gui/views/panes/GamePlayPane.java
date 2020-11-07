@@ -506,7 +506,7 @@ public class GamePlayPane extends BasePane {
                 + move.getSource().x()
                 + ", " + move.getSource().y()
                 + "] -> ["+ move.getDestination().x()
-                + ", "+ move.getDestination().x()+ "]";
+                + ", "+ move.getDestination().y()+ "]";
         String oldText = historyFiled.getText();
         historyFiled.setText(oldText + "\n" + lastMove);
     }
