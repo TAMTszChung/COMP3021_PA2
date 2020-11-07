@@ -7,6 +7,7 @@ import castle.comp3021.assignment.protocol.Place;
 import castle.comp3021.assignment.protocol.Player;
 import castle.comp3021.assignment.gui.controllers.Renderer;
 import castle.comp3021.assignment.gui.controllers.ResourceLoader;
+import castle.comp3021.assignment.protocol.exception.ResourceNotFoundException;
 import javafx.scene.image.Image;
 import org.jetbrains.annotations.NotNull;
 
@@ -76,12 +77,16 @@ public class Knight extends Piece {
      */
     public Renderer.@NotNull CellImage getImageRep() {
         //TODO
-        Image image;
-        if (this.getPlayer().getName().equals("White")) {
-            image = ResourceLoader.getImage('K');
-        }else{
-            image = ResourceLoader.getImage('k');
+        try {
+            Image image;
+            if (this.getPlayer().getName().equals("White")) {
+                image = ResourceLoader.getImage('K');
+            } else {
+                image = ResourceLoader.getImage('k');
+            }
+            return new Renderer.CellImage(image);
+        }catch (ResourceNotFoundException e){
+            throw new IllegalStateException("Cannot load Knight image");
         }
-        return new Renderer.CellImage(image);
     }
 }
