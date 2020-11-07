@@ -453,9 +453,11 @@ public class GamePlayPane extends BasePane {
     private void checkWinner(){
         //TODO
         if (winner != null){
+            String gameWinner = winner.getName();
             this.ticksElapsed.set(0);
             currentGame.stopCountdown();
-            createWinPopup(winner.getName());
+            this.endGame();
+            createWinPopup(gameWinner);
         }
     }
 
