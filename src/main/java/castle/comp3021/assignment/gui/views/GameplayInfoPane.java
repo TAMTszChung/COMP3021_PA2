@@ -1,11 +1,14 @@
 package castle.comp3021.assignment.gui.views;
 
 import castle.comp3021.assignment.gui.DurationTimer;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -28,6 +31,8 @@ public class GameplayInfoPane extends BigVBox {
     public GameplayInfoPane(IntegerProperty score1Property, IntegerProperty score2Property, StringProperty curPlayer,
                             IntegerProperty ticksElapsed) {
         //TODO
+        this.bindTo(score1Property,score2Property, curPlayer, ticksElapsed);
+        this.getChildren().addAll(score1Label,score2Label,timerLabel,curPlayerLabel);
     }
 
     /**
@@ -69,5 +74,15 @@ public class GameplayInfoPane extends BigVBox {
     private void bindTo(IntegerProperty score1Property, IntegerProperty score2Property, StringProperty curPlayer,
                         IntegerProperty ticksElapsed) {
         // TODO
+        Platform.runLater(() -> {
+            this.score1Label.textProperty().bind(
+                    Bindings.createStringBinding(() -> "Score of player 1: " + score1Property.get(), score1Property));
+            this.score2Label.textProperty().bind(
+                    Bindings.createStringBinding(() -> "Score of player 2: " + score2Property.get(), score2Property));
+            this.curPlayerLabel.textProperty().bind(
+                    Bindings.createStringBinding(() -> "Current player: " + curPlayer.get(), curPlayer));
+            this.timerLabel.textProperty().bind(
+                    Bindings.createStringBinding(() -> countdownFormat(ticksElapsed.get()), ticksElapsed));
+        });
     }
 }
