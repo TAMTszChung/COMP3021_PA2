@@ -50,7 +50,7 @@ import java.util.Optional;
  *      - If one player runs out of time of each round {@link DurationTimer#getDefaultEachRound()}, then the player loses the game.
  * Hint:
  *      - You may find it useful to synchronize javafx UI-thread using {@link javafx.application.Platform#runLater}
- */ 
+ */
 
 public class GamePlayPane extends BasePane {
     @NotNull
@@ -434,11 +434,15 @@ public class GamePlayPane extends BasePane {
                 try {
                     Serializer.getInstance().saveToFile(this.currentGame);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Alert failSave = new Alert(Alert.AlertType.ERROR);
+                    failSave.setTitle("Error");
+                    failSave.setHeaderText("Cannot save move record to file!");
+                    failSave.setContentText(e.getMessage());
+                    failSave.showAndWait();
                 }
                 this.onRestartButtonClick();
             }
-            case "Return to Main Menu" -> this.doQuitToMenu();
+            default -> this.doQuitToMenu();
         }
     }
 
@@ -592,11 +596,15 @@ public class GamePlayPane extends BasePane {
                 try {
                     Serializer.getInstance().saveToFile(this.currentGame);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Alert failSave = new Alert(Alert.AlertType.ERROR);
+                    failSave.setTitle("Error");
+                    failSave.setHeaderText("Cannot save move record to file!");
+                    failSave.setContentText(e.getMessage());
+                    failSave.showAndWait();
                 }
                 this.onRestartButtonClick();
             }
-            case "Return to Main Menu" -> this.doQuitToMenu();
+            default -> this.doQuitToMenu();
         }
     }
 }
