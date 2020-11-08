@@ -199,9 +199,9 @@ public class JesonMor extends Game {
         sb.append("\n\n");
         sb.append("#Move records\n");
         for (MoveRecord mr: this.moveRecords){
-            sb.append(mr.toString());
+            sb.append(mr.toString() + "\n");
         }
-        sb.append("\n\nEND");
+        sb.append("\nEND");
 
         return sb.toString();
     }
