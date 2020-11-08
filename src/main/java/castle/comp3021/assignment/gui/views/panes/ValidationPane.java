@@ -186,7 +186,9 @@ public class ValidationPane extends BasePane{
     private void onClickReplayButton(){
         //TODO
         if (replayThread != null){
-            return;
+            if (replayThread.isAlive()){
+                return;
+            }
         }
 
         if (!isValid.get()){
