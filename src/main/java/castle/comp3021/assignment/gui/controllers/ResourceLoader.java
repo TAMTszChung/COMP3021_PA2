@@ -40,7 +40,7 @@ public class ResourceLoader {
         if (resource.exists()){
             return resourcePath.toUri().toASCIIString();
         }else{
-            throw new ResourceNotFoundException("No file in the path specified");
+            throw new ResourceNotFoundException("No file in the path specified " + relativePath);
         }
     }
 
@@ -67,7 +67,7 @@ public class ResourceLoader {
             case 'c' -> new Image(ResourceLoader.getResource("assets/images/center.png"));
             case 'l' -> new Image(ResourceLoader.getResource("assets/images/lightBoard.png"));
             case 'd' -> new Image(ResourceLoader.getResource("assets/images/darkBoard.png"));
-            default -> throw new ResourceNotFoundException("No image found for specified type");
+            default -> throw new ResourceNotFoundException("No image found for specified type: " + typeChar);
         };
     }
 
