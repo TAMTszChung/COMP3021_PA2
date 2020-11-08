@@ -6,7 +6,10 @@ import castle.comp3021.assignment.gui.controllers.SceneManager;
 import castle.comp3021.assignment.gui.views.BigButton;
 import castle.comp3021.assignment.gui.views.BigVBox;
 import castle.comp3021.assignment.gui.views.NumberTextField;
+import castle.comp3021.assignment.player.ConsolePlayer;
+import castle.comp3021.assignment.player.RandomPlayer;
 import castle.comp3021.assignment.protocol.Configuration;
+import castle.comp3021.assignment.protocol.Player;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -42,8 +45,10 @@ public class GamePane extends BasePane {
     private final NumberTextField numMovesProtectionField = new NumberTextField("");
 
     @NotNull
-    private final BorderPane numMovesProtectionBox = new BorderPane(null, null, numMovesProtectionField, null, new Label("Protection Moves:"));
+    private final BorderPane numMovesProtectionBox =
+            new BorderPane(null, null, numMovesProtectionField, null, new Label("Protection Moves:"));
 
+    private Configuration localConfig = null;
 
     private FXJesonMor fxJesonMor = null;
 
@@ -82,8 +87,8 @@ public class GamePane extends BasePane {
     void setCallbacks() {
         //TODO
         this.isHumanPlayer1Button.setOnAction(event -> {
-            globalConfiguration.setFirstPlayerHuman(!globalConfiguration.isFirstPlayerHuman());
-            if (globalConfiguration.isFirstPlayerHuman()){
+            localConfig.setFirstPlayerHuman(!localConfig.isFirstPlayerHuman());
+            if (localConfig.isFirstPlayerHuman()){
                 this.isHumanPlayer1Button.setText("Player 1: Human");
             }else{
                 this.isHumanPlayer1Button.setText("Player 1: Computer");
@@ -91,30 +96,17 @@ public class GamePane extends BasePane {
         });
 
         this.isHumanPlayer2Button.setOnAction(event -> {
-            globalConfiguration.setSecondPlayerHuman(!globalConfiguration.isSecondPlayerHuman());
-            if (globalConfiguration.isSecondPlayerHuman()){
+            localConfig.setSecondPlayerHuman(!localConfig.isSecondPlayerHuman());
+            if (localConfig.isSecondPlayerHuman()){
                 this.isHumanPlayer2Button.setText("Player 2: Human");
             }else{
                 this.isHumanPlayer2Button.setText("Player 2: Computer");
             }
         });
 
-        this.useDefaultButton.setOnAction(event -> {
-            this.sizeFiled.setText(String.valueOf(globalConfiguration.getSize()));
-            this.numMovesProtectionField.setText(String.valueOf(globalConfiguration.getNumMovesProtection()));
-            if (globalConfiguration.isFirstPlayerHuman()){
-                this.isHumanPlayer1Button.setText("Player 1: Human");
-            }else{
-                this.isHumanPlayer1Button.setText("Player 1: Computer");
-            }
-            if (globalConfiguration.isSecondPlayerHuman()){
-                this.isHumanPlayer2Button.setText("Player 2: Human");
-            }else{
-                this.isHumanPlayer2Button.setText("Player 2: Computer");
-            }
-        });
+        this.useDefaultButton.setOnAction(event -> fillValues());
 
-        this.playButton.setOnAction(event ->{
+        this.playButton.setOnAction(event -> {
             int inputSize = this.sizeFiled.getValue();
             int inputnumProtection = this.numMovesProtectionField.getValue();
             Optional<String> error = validate(inputSize, inputnumProtection);
@@ -125,7 +117,7 @@ public class GamePane extends BasePane {
                 alert.setContentText(error.get());
                 alert.showAndWait();
             }else{
-                this.fxJesonMor = new FXJesonMor(new Configuration(inputSize, globalConfiguration.getPlayers(), inputnumProtection));
+                this.fxJesonMor = new FXJesonMor(new Configuration(inputSize, localConfig.getPlayers(), inputnumProtection));
                 startGame(fxJesonMor);
             }
         });
@@ -150,15 +142,33 @@ public class GamePane extends BasePane {
      */
     void fillValues(){
         // TODO
-        this.sizeFiled.setText(String.valueOf(globalConfiguration.getSize()));
-        this.numMovesProtectionField.setText(String.valueOf(globalConfiguration.getNumMovesProtection()));
+        //copy global config
+            //copy player
+        Player[] newPlayers = new Player[2];
         if (globalConfiguration.isFirstPlayerHuman()){
+            newPlayers[0] = new ConsolePlayer(globalConfiguration.getPlayers()[0].getName());
+        }else{
+            newPlayers[0] = new RandomPlayer(globalConfiguration.getPlayers()[0].getName());
+        }
+        if (globalConfiguration.isSecondPlayerHuman()){
+            newPlayers[1] = new ConsolePlayer(globalConfiguration.getPlayers()[1].getName());
+        }else{
+            newPlayers[1] = new RandomPlayer(globalConfiguration.getPlayers()[1].getName());
+        }
+            //create local config
+        localConfig = new Configuration(globalConfiguration.getSize(),
+                newPlayers, globalConfiguration.getNumMovesProtection());
+
+        //fill in values
+        this.sizeFiled.setText(String.valueOf(localConfig.getSize()));
+        this.numMovesProtectionField.setText(String.valueOf(localConfig.getNumMovesProtection()));
+        if (localConfig.isFirstPlayerHuman()){
             this.isHumanPlayer1Button.setText("Player 1: Human");
         }else{
             this.isHumanPlayer1Button.setText("Player 1: Computer");
         }
 
-        if (globalConfiguration.isSecondPlayerHuman()){
+        if (localConfig.isSecondPlayerHuman()){
             this.isHumanPlayer2Button.setText("Player 2: Human");
         }else{
             this.isHumanPlayer2Button.setText("Player 2: Computer");
