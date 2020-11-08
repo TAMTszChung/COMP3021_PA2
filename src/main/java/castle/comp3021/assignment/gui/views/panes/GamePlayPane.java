@@ -177,7 +177,6 @@ public class GamePlayPane extends BasePane {
         }
 
         this.currentGame = fxJesonMor;
-        currentGame.getConfiguration().setAllInitialPieces();
 
         this.startButton.setDisable(false);
         this.restartButton.setDisable(true);
@@ -210,32 +209,30 @@ public class GamePlayPane extends BasePane {
         }else{
             parameters.append("(computer)");
         }
+        parameters.append("\n");
 
-        int boardsize = this.currentGame.getConfiguration().getSize();
         this.parameterText.setText(parameters.toString());
-
         this.infoPane = new GameplayInfoPane(currentGame.getPlayer1Score(), currentGame.getPlayer2Score(),
                 currentGame.getCurPlayerName(), ticksElapsed);
         HBox.setHgrow(this.infoPane, Priority.ALWAYS);
         this.centerContainer.getChildren().add(infoPane);
 
+        int boardsize = this.currentGame.getConfiguration().getSize();
         this.gamePlayCanvas.setWidth(boardsize*ViewConfig.PIECE_SIZE);
         this.gamePlayCanvas.setHeight(boardsize*ViewConfig.PIECE_SIZE);
 
-        this.currentGame.addOnTickHandler(() -> Platform.runLater(() -> this.ticksElapsed.set(this.ticksElapsed.get()+1)));
-
-        this.currentGame.addOnTickHandler(() -> {
-            if (this.winner == null) {
-                Platform.runLater(this::startGame);
-            }
-            if (this.ticksElapsed.get() >= DurationTimer.getDefaultEachRound() - 1) {
+        this.currentGame.addOnTickHandler(() -> Platform.runLater(() -> {
+            this.ticksElapsed.set(this.ticksElapsed.get()+1);
+            this.startGame();
+            if (this.ticksElapsed.get() >= DurationTimer.getDefaultEachRound()) {
+                currentGame.stopCountdown();
                 Platform.runLater(() -> {
                     this.ticksElapsed.set(0);
                     createLosePopup();
                 });
-                currentGame.stopCountdown();
             }
-        });
+        }));
+
         this.currentGame.renderBoard(this.gamePlayCanvas);
     }
 

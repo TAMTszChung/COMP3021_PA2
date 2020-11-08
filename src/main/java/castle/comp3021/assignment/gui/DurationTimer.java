@@ -19,7 +19,6 @@ public class DurationTimer {
 
 
     private final List<Runnable> onTickCallbacks = new ArrayList<>();
-    private final List<Runnable> onTimeup = new ArrayList<>();
 
     /**
      * time elapsed
