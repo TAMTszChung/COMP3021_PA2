@@ -2,12 +2,10 @@ package castle.comp3021.assignment.protocol.io;
 
 
 import castle.comp3021.assignment.gui.FXJesonMor;
-import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -39,7 +37,7 @@ public class Serializer {
     public void saveToFile(FXJesonMor fxJesonMor) throws IOException {
         //TODO
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         File file = fileChooser.showSaveDialog(null);
 
         String gameRecord = fxJesonMor.toString();
