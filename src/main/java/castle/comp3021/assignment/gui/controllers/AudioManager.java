@@ -1,5 +1,7 @@
 package castle.comp3021.assignment.gui.controllers;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 
 import java.util.HashSet;
@@ -63,7 +65,23 @@ public class AudioManager {
      */
     private void playFile(final String name) {
         //TODO
-
+        if (this.enabled) {
+            String soundFile = ResourceLoader.getResource("assets/audio/" + name + ".mp3");
+            Media sound = new Media(soundFile);
+            try {
+                MediaPlayer mediaPlayer = new MediaPlayer(sound);
+                this.soundPool.add(mediaPlayer);
+                mediaPlayer.onEndOfMediaProperty().setValue(() -> {
+                    soundPool.remove(mediaPlayer);
+                    Thread disposeThread = new Thread(mediaPlayer::dispose);
+                    disposeThread.setDaemon(true);
+                    disposeThread.start();
+                });
+                mediaPlayer.play();
+            } catch (MediaException mediaException) {
+                System.out.println("Fail to play sound: " + name);
+            }
+        }
     }
 
     /**
