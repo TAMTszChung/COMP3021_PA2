@@ -19,6 +19,7 @@ public class DurationTimer {
 
 
     private final List<Runnable> onTickCallbacks = new ArrayList<>();
+    private final List<Runnable> onTimeup = new ArrayList<>();
 
     /**
      * time elapsed
@@ -59,6 +60,9 @@ public class DurationTimer {
         var task = new TimerTask() {
             @Override
             public void run() {
+                for (Runnable r: onTickCallbacks){
+                    r.run();
+                }
                 ticksElapsed++;
             }
         };
@@ -70,6 +74,7 @@ public class DurationTimer {
      */
     void stop() {
         //TODO
+        this.ticksElapsed = 0;
         flowTimer.cancel();
     }
 
