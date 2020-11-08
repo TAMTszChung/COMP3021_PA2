@@ -40,7 +40,7 @@ public class ResourceLoader {
         if (resource.exists()){
             return resourcePath.toUri().toASCIIString();
         }else{
-            throw new ResourceNotFoundException("No file in the path specified " + relativePath);
+            throw new ResourceNotFoundException("No file in the path specified at: " + relativePath);
         }
     }
 
