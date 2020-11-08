@@ -217,16 +217,16 @@ public class ValidationPane extends BasePane{
                         System.out.println("exited");
                         return null;
                     }
-                    Platform.runLater(() -> {
-                        localloadedGame.movePiece(mr.getMove());
-                        localloadedGame.renderBoard(gamePlayCanvas);
-                        AudioManager.getInstance().playSound(AudioManager.SoundRes.PLACE);
-                    });
                     try {
                         Thread.sleep(1000L);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    Platform.runLater(() -> {
+                        localloadedGame.movePiece(mr.getMove());
+                        localloadedGame.renderBoard(gamePlayCanvas);
+                        AudioManager.getInstance().playSound(AudioManager.SoundRes.PLACE);
+                    });
                 }
                 return null;
             }
