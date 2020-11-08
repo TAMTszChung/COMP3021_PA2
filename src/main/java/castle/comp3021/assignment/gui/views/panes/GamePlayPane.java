@@ -272,7 +272,6 @@ public class GamePlayPane extends BasePane {
         var numberMoves = currentGame.getNumMoves();
         var currentPlayer = players[numberMoves % players.length];
         var playerAvailMoves = currentGame.getAvailableMoves(currentPlayer);
-        Move nextmove = null;
         if (playerAvailMoves.length <= 0) {
             showInvalidMoveMsg("No available moves for the player " + currentPlayer.getName());
             if (currentConfig.getPlayers()[0].getScore() < currentConfig.getPlayers()[1].getScore()) {
@@ -284,6 +283,7 @@ public class GamePlayPane extends BasePane {
             }
         }
 
+        Move nextmove = null;
         if (winner == null){
             if (currentPlayer instanceof ConsolePlayer){
                 this.enableCanvas();
@@ -294,7 +294,7 @@ public class GamePlayPane extends BasePane {
                     this.disnableCanvas();
                 }
             }else if (currentPlayer instanceof RandomPlayer || currentPlayer instanceof SmartRandomPlayer) {
-                gamePlayCanvas.setDisable(true);
+                this.disnableCanvas();
                 nextmove = currentPlayer.nextMove(currentGame, playerAvailMoves);
             }
 
