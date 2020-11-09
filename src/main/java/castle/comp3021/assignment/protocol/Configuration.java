@@ -283,7 +283,7 @@ public class Configuration implements Cloneable {
         for (int i=0; i<this.players.length;i++){
             sb.append("\n#player");
             sb.append(i+1);
-            sb.append("\n");
+            sb.append(":\n");
             String playerInfo = String.format("name:%s; score:%d", players[i].getName(), players[i].getScore());
             sb.append(playerInfo);
         }
