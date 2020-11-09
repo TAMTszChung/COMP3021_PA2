@@ -271,7 +271,8 @@ public class GamePlayPane extends BasePane {
         var currentPlayer = currentGame.getCurrentPlayer();
         var playerAvailMoves = currentGame.getAvailableMoves(currentPlayer);
         if (playerAvailMoves.length <= 0) {
-            showInvalidMoveMsg("No available moves for the player " + currentPlayer.getName());
+            Platform.runLater(() ->
+                    showInvalidMoveMsg("No available moves for the player " + currentPlayer.getName()));
             if (currentConfig.getPlayers()[0].getScore() < currentConfig.getPlayers()[1].getScore()) {
                 winner = currentConfig.getPlayers()[0];
             } else if (currentConfig.getPlayers()[0].getScore() > currentConfig.getPlayers()[1].getScore()) {
