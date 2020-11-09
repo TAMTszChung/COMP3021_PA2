@@ -213,13 +213,13 @@ public class ValidationPane extends BasePane{
                 FXJesonMor localloadedGame = loadedGame;
 
                 for (MoveRecord mr : localloadedMoveRecords) {
-                    if (exit) {
-                        return null;
-                    }
                     try {
                         Thread.sleep(1000L);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                    }
+                    if (exit) {
+                        return null;
                     }
                     Platform.runLater(() -> {
                         localloadedGame.movePiece(mr.getMove());
