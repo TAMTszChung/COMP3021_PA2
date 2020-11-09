@@ -268,9 +268,7 @@ public class GamePlayPane extends BasePane {
     public void startGame() {
         //TODO
         Configuration currentConfig = currentGame.getConfiguration();
-        var players = currentConfig.getPlayers();
-        var numberMoves = currentGame.getNumMoves();
-        var currentPlayer = players[numberMoves % players.length];
+        var currentPlayer = currentGame.getCurrentPlayer();
         var playerAvailMoves = currentGame.getAvailableMoves(currentPlayer);
         if (playerAvailMoves.length <= 0) {
             showInvalidMoveMsg("No available moves for the player " + currentPlayer.getName());
