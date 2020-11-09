@@ -174,10 +174,10 @@ public class SettingPane extends BasePane {
             newPlayers[1] = new RandomPlayer(globalConfiguration.getPlayers()[1].getName());
         }
             //create local config
-        localConfig = new Configuration(globalConfiguration.getSize(),
+        this.localConfig = new Configuration(globalConfiguration.getSize(),
                 newPlayers, globalConfiguration.getNumMovesProtection());
 
-        localAudio = AudioManager.getInstance().isEnabled();
+        this.localAudio = AudioManager.getInstance().isEnabled();
 
         //fill in values
         this.sizeFiled.setText(String.valueOf(localConfig.getSize()));
