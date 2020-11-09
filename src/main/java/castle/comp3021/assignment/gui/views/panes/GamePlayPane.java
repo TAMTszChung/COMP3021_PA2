@@ -303,17 +303,18 @@ public class GamePlayPane extends BasePane {
                 if (validateResult != null){
                     this.showInvalidMoveMsg(validateResult);
                 }else{
-                    boolean ownpiece = false;
+                    Piece currentPiece = currentGame.getPiece(nextmove.getSource());
+                    boolean ownPiece = currentPiece.getPlayer().equals(currentPlayer);
+                    boolean ownMove = false;
                     for (Move m: playerAvailMoves){
                         if (m.equals(nextmove)){
-                            ownpiece = true;
+                            ownMove = true;
                             break;
                         }
                     }
-                    if (!ownpiece){
+                    if (!ownMove || !ownPiece){
                         this.showInvalidMoveMsg("The piece you moved does not belong to you!");
                     }else{
-                        Piece currentPiece = currentGame.getPiece(nextmove.getSource());
                         currentGame.movePiece(nextmove);
                         AudioManager.getInstance().playSound(AudioManager.SoundRes.PLACE);
                         currentGame.updateScore(currentPlayer, currentPiece, nextmove);
