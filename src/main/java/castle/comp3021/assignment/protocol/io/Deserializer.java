@@ -232,6 +232,12 @@ public class Deserializer {
         if (movePlace.length < 2) {
             throw new InvalidConfigurationError("One move should contain both source and target!");
         }
+        if (movePlace[0].strip().isBlank()){
+            throw new InvalidConfigurationError("Source place is empty!");
+        }
+        if (movePlace[1].strip().isBlank()){
+            throw new InvalidConfigurationError("Target place is empty!");
+        }
 
         Place start = parsePlace(movePlace[0].strip());
         Place end = parsePlace(movePlace[1].strip());
