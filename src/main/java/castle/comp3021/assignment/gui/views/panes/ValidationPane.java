@@ -161,7 +161,8 @@ public class ValidationPane extends BasePane{
         }
 
         if (loadedConfiguration == null || storedScores == null
-                || loadedGame == null || loadedcentralPlace == null){
+                || loadedGame == null || loadedcentralPlace == null
+                || loadedMoveRecords == null){
             this.showErrorMsg();
             return;
         }
@@ -205,7 +206,8 @@ public class ValidationPane extends BasePane{
             @Override
             protected Void call() {
                 if (loadedConfiguration == null || storedScores == null
-                        || loadedGame == null || loadedcentralPlace == null) {
+                        || loadedGame == null || loadedcentralPlace == null
+                        || loadedMoveRecords == null) {
                     showErrorMsg();
                     return null;
                 }
