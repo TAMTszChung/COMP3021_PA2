@@ -247,7 +247,7 @@ public class SettingPane extends BasePane {
             return Optional.of(ViewConfig.MSG_NEG_PROT);
         }
 
-        if (duration < 0){
+        if (duration <= 0){
             return Optional.of(ViewConfig.MSG_NEG_DURATION);
         }
 
