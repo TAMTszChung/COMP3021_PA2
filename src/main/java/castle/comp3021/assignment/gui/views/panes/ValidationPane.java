@@ -96,6 +96,7 @@ public class ValidationPane extends BasePane{
         //TODO
         this.loadButton.setOnAction(event -> {
             this.replayButton.setDisable(true);
+            this.validationButton.setDisable(true);
             boolean loaded = this.loadFromFile();
             if (loaded) {
                 this.validationButton.setDisable(false);
@@ -124,7 +125,7 @@ public class ValidationPane extends BasePane{
         //TODO
         this.resetPane();
         File file = this.getTargetLoadFile();
-        if (file == null || !file.exists()){
+        if (file == null){
             return false;
         }
         try{
@@ -139,11 +140,8 @@ public class ValidationPane extends BasePane{
         } catch (FileNotFoundException e) {
             this.showErrorConfiguration(e.getMessage());
             return false;
-        }catch (InvalidConfigurationError c){
+        }catch (InvalidConfigurationError | InvalidGameException c){
             this.gameBasicError = c.getMessage();
-            return true;
-        }catch (InvalidGameException g){
-            this.gameBasicError = g.getMessage();
             return true;
         }
     }
@@ -216,7 +214,6 @@ public class ValidationPane extends BasePane{
 
                 for (MoveRecord mr : localloadedMoveRecords) {
                     if (exit) {
-                        System.out.println("exited");
                         return null;
                     }
                     try {
