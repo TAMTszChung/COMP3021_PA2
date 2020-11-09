@@ -252,13 +252,13 @@ public class Deserializer {
             if (matcher.find()){
                 centerX =  Integer.parseInt(matcher.group());
             }else{
-                throw new InvalidConfigurationError("Fail to Parse place: No X coordinate");
+                throw new InvalidConfigurationError("Source place is empty!");
             }
 
             if (matcher.find()){
                 centerY =  Integer.parseInt(matcher.group());
             }else{
-                throw new InvalidConfigurationError("Fail to Parse place: No Y coordinate");
+                throw new InvalidConfigurationError("Target place is empty!");
             }
             return new Place(centerX, centerY);
 
