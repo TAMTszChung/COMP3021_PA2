@@ -377,7 +377,6 @@ public class GamePlayPane extends BasePane {
 
         GraphicsContext currentGC = gamePlayCanvas.getGraphicsContext2D();
         Renderer.drawRectangle(currentGC, startX*ViewConfig.PIECE_SIZE, startY*ViewConfig.PIECE_SIZE);
-        AudioManager.getInstance().playSound(AudioManager.SoundRes.CLICK);
     }
 
     /**
