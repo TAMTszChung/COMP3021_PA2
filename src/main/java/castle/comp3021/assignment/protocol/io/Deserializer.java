@@ -237,7 +237,7 @@ public class Deserializer {
     private Move parseMove(String moveString) {
         // TODO
         String[] movePlace = moveString.split(":")[1].split("->");
-        if (movePlace.length < 2) {
+        if (movePlace.length != 2) {
             throw new InvalidConfigurationError("One move should contain both source and target!");
         }
         if (movePlace[0].strip().isBlank()){
@@ -261,25 +261,18 @@ public class Deserializer {
     private Place parsePlace(String placeString) {
         //TODO
         try{
-            int centerX;
-            int centerY;
-            Pattern pattern = Pattern.compile("\\d+");
-            Matcher matcher = pattern.matcher(placeString);
-            if (matcher.find()){
-                centerX =  Integer.parseInt(matcher.group());
-            }else{
-                throw new InvalidConfigurationError("Fail to Parse place: No X coordinate");
-            }
+            String[] points = placeString.replace("(","")
+                    .replace(")","").split(",");
 
-            if (matcher.find()){
-                centerY =  Integer.parseInt(matcher.group());
-            }else{
-                throw new InvalidConfigurationError("Fail to Parse place: No Y coordinate");
+            if (points.length != 2){
+                throw new InvalidConfigurationError("One place should have x and y coordinate");
             }
-            return new Place(centerX, centerY);
+            int placeX = Integer.parseInt(points[0].strip());
+            int placeY = Integer.parseInt(points[1].strip());
 
+            return new Place(placeX, placeY);
         } catch (Exception e) {
-            throw new InvalidConfigurationError(e.getMessage());
+            throw new InvalidConfigurationError("Fail to parse place: " + e.getMessage());
         }
     }
 
