@@ -124,6 +124,10 @@ public class Deserializer {
                 throw new InvalidGameException("Unexpected EOF when parsing number of players");
             }
 
+            if (numPlayers != 2){
+                throw new InvalidGameException("there must be exactly two players");
+            }
+
             // TODO:
             /**
              * create an array of players {@link Player} with length of numPlayers, and name it by the read-in name
@@ -199,6 +203,10 @@ public class Deserializer {
 
     public ArrayList<MoveRecord> getMoveRecords(){
         return moveRecords;
+    }
+
+    public Place getCentralPlace(){
+        return centralPlace;
     }
 
     /**

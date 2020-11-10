@@ -134,7 +134,7 @@ public class ValidationPane extends BasePane{
             this.loadedConfiguration = deserializer.getLoadedConfiguration();
             this.storedScores = deserializer.getStoredScores();
             this.loadedMoveRecords = deserializer.getMoveRecords();
-            this.loadedcentralPlace = deserializer.getLoadedConfiguration().getCentralPlace();
+            this.loadedcentralPlace = deserializer.getCentralPlace();
             this.loadedGame = new FXJesonMor(loadedConfiguration);
             return true;
         } catch (FileNotFoundException e) {
